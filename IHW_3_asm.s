@@ -4,80 +4,80 @@
 	.globl	Sqrt
 	.type	Sqrt, @function
 Sqrt:
-	push	rbp								 ; пролог функции
+	push	rbp					 ; РїСЂРѕР»РѕРі С„СѓРЅРєС†РёРё
 	mov	rbp, rsp
 
-	movsd	QWORD PTR -24[rbp], xmm0		; формальный параметр number
-	pxor	xmm0, xmm0						; обнуление xmm0
-	ucomisd	xmm0, QWORD PTR -24[rbp]		; сравнине number == 0
-	jp	.L2									; переходим на метку L2, если нечётно
+	movsd	QWORD PTR -24[rbp], xmm0		; С„РѕСЂРјР°Р»СЊРЅС‹Р№ РїР°СЂР°РјРµС‚СЂ number
+	pxor	xmm0, xmm0				; РѕР±РЅСѓР»РµРЅРёРµ xmm0
+	ucomisd	xmm0, QWORD PTR -24[rbp]		; СЃСЂР°РІРЅРёРЅРµ number == 0
+	jp	.L2					; РїРµСЂРµС…РѕРґРёРј РЅР° РјРµС‚РєСѓ L2, РµСЃР»Рё РЅРµС‡С‘С‚РЅРѕ
 
-	pxor	xmm0, xmm0						; обнуление xmm0
-	ucomisd	xmm0, QWORD PTR -24[rbp]		; сравнине number == 0
-	jne	.L2									; переход на метку L2, если они не равны
-	pxor	xmm0, xmm0						; обнуление xmm0
+	pxor	xmm0, xmm0				; РѕР±РЅСѓР»РµРЅРёРµ xmm0
+	ucomisd	xmm0, QWORD PTR -24[rbp]		; СЃСЂР°РІРЅРёРЅРµ number == 0
+	jne	.L2					; РїРµСЂРµС…РѕРґ РЅР° РјРµС‚РєСѓ L2, РµСЃР»Рё РѕРЅРё РЅРµ СЂР°РІРЅС‹
+	pxor	xmm0, xmm0				; РѕР±РЅСѓР»РµРЅРёРµ xmm0
 	jmp	.L4									
 .L2:
-	movsd	xmm0, QWORD PTR -24[rbp]		; берём значение number
-	movsd	xmm1, QWORD PTR .LC1[rip]		; берём значение 1
-	comisd	xmm0, xmm1						; в xmm0 лежит number, в xmm1 лежит 1. Они сравниваются
-	jb	.L14								; если number < 1, то переход в L14 (else)
+	movsd	xmm0, QWORD PTR -24[rbp]		; Р±РµСЂС‘Рј Р·РЅР°С‡РµРЅРёРµ number
+	movsd	xmm1, QWORD PTR .LC1[rip]		; Р±РµСЂС‘Рј Р·РЅР°С‡РµРЅРёРµ 1
+	comisd	xmm0, xmm1				; РІ xmm0 Р»РµР¶РёС‚ number, РІ xmm1 Р»РµР¶РёС‚ 1. РћРЅРё СЃСЂР°РІРЅРёРІР°СЋС‚СЃСЏ
+	jb	.L14					; РµСЃР»Рё number < 1, С‚Рѕ РїРµСЂРµС…РѕРґ РІ L14 (else)
 
-	movsd	xmm0, QWORD PTR -24[rbp]		; берём значение number и помещаем в xmm0
-	movsd	xmm1, QWORD PTR .LC2[rip]		; берём значение 2 и помещаем в xmm1
-	divsd	xmm0, xmm1						; делим number на 2
-	movsd	QWORD PTR -8[rbp], xmm0			; сохраняем результат из xmm0 в стек (переменная result)
+	movsd	xmm0, QWORD PTR -24[rbp]		; Р±РµСЂС‘Рј Р·РЅР°С‡РµРЅРёРµ number Рё РїРѕРјРµС‰Р°РµРј РІ xmm0
+	movsd	xmm1, QWORD PTR .LC2[rip]		; Р±РµСЂС‘Рј Р·РЅР°С‡РµРЅРёРµ 2 Рё РїРѕРјРµС‰Р°РµРј РІ xmm1
+	divsd	xmm0, xmm1				; РґРµР»РёРј number РЅР° 2
+	movsd	QWORD PTR -8[rbp], xmm0			; СЃРѕС…СЂР°РЅСЏРµРј СЂРµР·СѓР»СЊС‚Р°С‚ РёР· xmm0 РІ СЃС‚РµРє (РїРµСЂРµРјРµРЅРЅР°СЏ result)
 
-	mov	DWORD PTR -16[rbp], 0				; инициализируем i = 0
-	jmp	.L7									; переход в условие цикла for
+	mov	DWORD PTR -16[rbp], 0			; РёРЅРёС†РёР°Р»РёР·РёСЂСѓРµРј i = 0
+	jmp	.L7					; РїРµСЂРµС…РѕРґ РІ СѓСЃР»РѕРІРёРµ С†РёРєР»Р° for
 	
-.L8:										; тело цикла for
-	movsd	xmm0, QWORD PTR -24[rbp]		; взяли nnumber и поместили в xmm0
-	divsd	xmm0, QWORD PTR -8[rbp]			; разделили number на result
-	movapd	xmm1, xmm0						; переместили результат деления в xmm1
-	addsd	xmm1, QWORD PTR -8[rbp]			; прибавили к результату result
-	movsd	xmm0, QWORD PTR .LC3[rip]		; взяли 0.5 (LC3)
-	mulsd	xmm0, xmm1						; и умножили 0.5 на result
-	movsd	QWORD PTR -8[rbp], xmm0			; сохранили в result результат
-	add	DWORD PTR -16[rbp], 1				; i++
+.L8:							; С‚РµР»Рѕ С†РёРєР»Р° for
+	movsd	xmm0, QWORD PTR -24[rbp]		; РІР·СЏР»Рё nnumber Рё РїРѕРјРµСЃС‚РёР»Рё РІ xmm0
+	divsd	xmm0, QWORD PTR -8[rbp]			; СЂР°Р·РґРµР»РёР»Рё number РЅР° result
+	movapd	xmm1, xmm0				; РїРµСЂРµРјРµСЃС‚РёР»Рё СЂРµР·СѓР»СЊС‚Р°С‚ РґРµР»РµРЅРёСЏ РІ xmm1
+	addsd	xmm1, QWORD PTR -8[rbp]			; РїСЂРёР±Р°РІРёР»Рё Рє СЂРµР·СѓР»СЊС‚Р°С‚Сѓ result
+	movsd	xmm0, QWORD PTR .LC3[rip]		; РІР·СЏР»Рё 0.5 (LC3)
+	mulsd	xmm0, xmm1				; Рё СѓРјРЅРѕР¶РёР»Рё 0.5 РЅР° result
+	movsd	QWORD PTR -8[rbp], xmm0			; СЃРѕС…СЂР°РЅРёР»Рё РІ result СЂРµР·СѓР»СЊС‚Р°С‚
+	add	DWORD PTR -16[rbp], 1			; i++
 
-.L7:										; условие цикла for
-	movsd	xmm1, QWORD PTR -24[rbp]		; помещаем number в xmm1
-	movsd	xmm0, QWORD PTR .LC3[rip]		; помещаем 0.5 в xmm0
-	mulsd	xmm0, xmm1						; умножаем 0.5 и number
-	cvttsd2si	eax, xmm0					; конвертация результата из double в int
+.L7:							; СѓСЃР»РѕРІРёРµ С†РёРєР»Р° for
+	movsd	xmm1, QWORD PTR -24[rbp]		; РїРѕРјРµС‰Р°РµРј number РІ xmm1
+	movsd	xmm0, QWORD PTR .LC3[rip]		; РїРѕРјРµС‰Р°РµРј 0.5 РІ xmm0
+	mulsd	xmm0, xmm1				; СѓРјРЅРѕР¶Р°РµРј 0.5 Рё number
+	cvttsd2si	eax, xmm0			; РєРѕРЅРІРµСЂС‚Р°С†РёСЏ СЂРµР·СѓР»СЊС‚Р°С‚Р° РёР· double РІ int
 
-	add	eax, 1								; прибавили 1
-	cmp	DWORD PTR -16[rbp], eax				; сравниваем i с результатом из eax
+	add	eax, 1					; РїСЂРёР±Р°РІРёР»Рё 1
+	cmp	DWORD PTR -16[rbp], eax			; СЃСЂР°РІРЅРёРІР°РµРј i СЃ СЂРµР·СѓР»СЊС‚Р°С‚РѕРј РёР· eax
 
-	jle	.L8									; если i меньше результата, то заходим в тело цикла for
-	jmp	.L9									; выход из цикла for
+	jle	.L8					; РµСЃР»Рё i РјРµРЅСЊС€Рµ СЂРµР·СѓР»СЊС‚Р°С‚Р°, С‚Рѕ Р·Р°С…РѕРґРёРј РІ С‚РµР»Рѕ С†РёРєР»Р° for
+	jmp	.L9					; РІС‹С…РѕРґ РёР· С†РёРєР»Р° for
 
-.L14:										; else
-	movsd	xmm0, QWORD PTR -24[rbp]		; взяли number и поместили в xmm0
-	movsd	QWORD PTR -8[rbp], xmm0			; переместили number в result
-	mov	DWORD PTR -12[rbp], 0				; инициализация i = 0 для цикла for
-	jmp	.L10								; переход в условие цилка for
+.L14:							; else
+	movsd	xmm0, QWORD PTR -24[rbp]		; РІР·СЏР»Рё number Рё РїРѕРјРµСЃС‚РёР»Рё РІ xmm0
+	movsd	QWORD PTR -8[rbp], xmm0			; РїРµСЂРµРјРµСЃС‚РёР»Рё number РІ result
+	mov	DWORD PTR -12[rbp], 0			; РёРЅРёС†РёР°Р»РёР·Р°С†РёСЏ i = 0 РґР»СЏ С†РёРєР»Р° for
+	jmp	.L10					; РїРµСЂРµС…РѕРґ РІ СѓСЃР»РѕРІРёРµ С†РёР»РєР° for
 
-.L11:										; тело цикла for
-	movsd	xmm0, QWORD PTR -24[rbp]		; взяли number и поместили в xmm0
-	divsd	xmm0, QWORD PTR -8[rbp]			; делим number на result (-8[rbp])
-	movapd	xmm1, xmm0						; перемещаем результат деления в xmm1
-	addsd	xmm1, QWORD PTR -8[rbp]			; прибавляем к результату переменную result
-	movsd	xmm0, QWORD PTR .LC3[rip]		; помещаем 0.5 в xmm0
-	mulsd	xmm0, xmm1						; умножаем 0.5 и result
-	movsd	QWORD PTR -8[rbp], xmm0			; присваиваем result резултат операции
-	add	DWORD PTR -12[rbp], 1				; i++
+.L11:							; С‚РµР»Рѕ С†РёРєР»Р° for
+	movsd	xmm0, QWORD PTR -24[rbp]		; РІР·СЏР»Рё number Рё РїРѕРјРµСЃС‚РёР»Рё РІ xmm0
+	divsd	xmm0, QWORD PTR -8[rbp]			; РґРµР»РёРј number РЅР° result (-8[rbp])
+	movapd	xmm1, xmm0				; РїРµСЂРµРјРµС‰Р°РµРј СЂРµР·СѓР»СЊС‚Р°С‚ РґРµР»РµРЅРёСЏ РІ xmm1
+	addsd	xmm1, QWORD PTR -8[rbp]			; РїСЂРёР±Р°РІР»СЏРµРј Рє СЂРµР·СѓР»СЊС‚Р°С‚Сѓ РїРµСЂРµРјРµРЅРЅСѓСЋ result
+	movsd	xmm0, QWORD PTR .LC3[rip]		; РїРѕРјРµС‰Р°РµРј 0.5 РІ xmm0
+	mulsd	xmm0, xmm1				; СѓРјРЅРѕР¶Р°РµРј 0.5 Рё result
+	movsd	QWORD PTR -8[rbp], xmm0			; РїСЂРёСЃРІР°РёРІР°РµРј result СЂРµР·СѓР»С‚Р°С‚ РѕРїРµСЂР°С†РёРё
+	add	DWORD PTR -12[rbp], 1			; i++
 
-.L10:										; условие цикла for
-	cmp	DWORD PTR -12[rbp], 49				; строчка i < 50
-	jle	.L11								; переход в тело цикла for если меньше
+.L10:							; СѓСЃР»РѕРІРёРµ С†РёРєР»Р° for
+	cmp	DWORD PTR -12[rbp], 49			; СЃС‚СЂРѕС‡РєР° i < 50
+	jle	.L11					; РїРµСЂРµС…РѕРґ РІ С‚РµР»Рѕ С†РёРєР»Р° for РµСЃР»Рё РјРµРЅСЊС€Рµ
 .L9:
 	movsd	xmm0, QWORD PTR -8[rbp]			; return result
-.L4:										; возврат значения из функции
-	movq	rax, xmm0						; переносим 0 в rax
+.L4:							; РІРѕР·РІСЂР°С‚ Р·РЅР°С‡РµРЅРёСЏ РёР· С„СѓРЅРєС†РёРё
+	movq	rax, xmm0				; РїРµСЂРµРЅРѕСЃРёРј 0 РІ rax
 	movq	xmm0, rax
-	pop	rbp									; востанавливаем указатель стека
+	pop	rbp					; РІРѕСЃС‚Р°РЅР°РІР»РёРІР°РµРј СѓРєР°Р·Р°С‚РµР»СЊ СЃС‚РµРєР°
 	ret
 	.size	Sqrt, .-Sqrt
 	.section	.rodata
@@ -100,72 +100,72 @@ inputNumber:
 	mov	QWORD PTR -8[rbp], rax
 	xor	eax, eax
 
-	lea	rax, .LC4[rip]								; сообщение для вывода
-	mov	rdi, rax									; переносим сообщение в функцию
-	mov	eax, 0										; код выхода
+	lea	rax, .LC4[rip]				; СЃРѕРѕР±С‰РµРЅРёРµ РґР»СЏ РІС‹РІРѕРґР°
+	mov	rdi, rax				; РїРµСЂРµРЅРѕСЃРёРј СЃРѕРѕР±С‰РµРЅРёРµ РІ С„СѓРЅРєС†РёСЋ
+	mov	eax, 0					; РєРѕРґ РІС‹С…РѕРґР°
 	call	printf@PLT
 .L21:
-	lea	rax, -18[rbp]								; место, куда пользователь будет вводить значение (buf)
+	lea	rax, -18[rbp]				; РјРµСЃС‚Рѕ, РєСѓРґР° РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ Р±СѓРґРµС‚ РІРІРѕРґРёС‚СЊ Р·РЅР°С‡РµРЅРёРµ (buf)
 	mov	rdi, rax
-	mov	eax, 0										; код выхода
-	call	gets@PLT								; вызов функции
+	mov	eax, 0					; РєРѕРґ РІС‹С…РѕРґР°
+	call	gets@PLT				; РІС‹Р·РѕРІ С„СѓРЅРєС†РёРё
 
-	lea	rax, -18[rbp]								; передаём в функцию buf
+	lea	rax, -18[rbp]				; РїРµСЂРµРґР°С‘Рј РІ С„СѓРЅРєС†РёСЋ buf
 	mov	rdi, rax
-	call	atof@PLT								; вызываем функцию
-	movq	rax, xmm0								; получаем значение из функции
-	mov	QWORD PTR -32[rbp], rax						; присваиваем number результат функции
+	call	atof@PLT				; РІС‹Р·С‹РІР°РµРј С„СѓРЅРєС†РёСЋ
+	movq	rax, xmm0				; РїРѕР»СѓС‡Р°РµРј Р·РЅР°С‡РµРЅРёРµ РёР· С„СѓРЅРєС†РёРё
+	mov	QWORD PTR -32[rbp], rax			; РїСЂРёСЃРІР°РёРІР°РµРј number СЂРµР·СѓР»СЊС‚Р°С‚ С„СѓРЅРєС†РёРё
 
-	pxor	xmm0, xmm0								; обнуляем xmm0
+	pxor	xmm0, xmm0				; РѕР±РЅСѓР»СЏРµРј xmm0
 	ucomisd	xmm0, QWORD PTR -32[rbp]
-	jp	.L16										; проверка на чётный бит. Переходим 
+	jp	.L16					; РїСЂРѕРІРµСЂРєР° РЅР° С‡С‘С‚РЅС‹Р№ Р±РёС‚. РџРµСЂРµС…РѕРґРёРј 
 
-	pxor	xmm0, xmm0								; обнуление xmm0
-	ucomisd	xmm0, QWORD PTR -32[rbp]				; сравниваем number == 0
-	jne	.L16										; переходим, если не равно
+	pxor	xmm0, xmm0				; РѕР±РЅСѓР»РµРЅРёРµ xmm0
+	ucomisd	xmm0, QWORD PTR -32[rbp]		; СЃСЂР°РІРЅРёРІР°РµРј number == 0
+	jne	.L16					; РїРµСЂРµС…РѕРґРёРј, РµСЃР»Рё РЅРµ СЂР°РІРЅРѕ
 
-	movzx	eax, BYTE PTR -18[rbp]					; берём первое значение в массиве buf
-	cmp	al, 48										; сравниваем buf[0] == '0'
-	je	.L16										; Переходим в (else if) если равно
+	movzx	eax, BYTE PTR -18[rbp]			; Р±РµСЂС‘Рј РїРµСЂРІРѕРµ Р·РЅР°С‡РµРЅРёРµ РІ РјР°СЃСЃРёРІРµ buf
+	cmp	al, 48					; СЃСЂР°РІРЅРёРІР°РµРј buf[0] == '0'
+	je	.L16					; РџРµСЂРµС…РѕРґРёРј РІ (else if) РµСЃР»Рё СЂР°РІРЅРѕ
 
-	lea	rax, .LC5[rip]								; берём сообщение
-	mov	rdi, rax									; заносим сообщение в функцию
-	mov	eax, 0										; код возврата
-	call	printf@PLT								; вызов функии
+	lea	rax, .LC5[rip]				; Р±РµСЂС‘Рј СЃРѕРѕР±С‰РµРЅРёРµ
+	mov	rdi, rax				; Р·Р°РЅРѕСЃРёРј СЃРѕРѕР±С‰РµРЅРёРµ РІ С„СѓРЅРєС†РёСЋ
+	mov	eax, 0					; РєРѕРґ РІРѕР·РІСЂР°С‚Р°
+	call	printf@PLT				; РІС‹Р·РѕРІ С„СѓРЅРєРёРё
 
-	mov	BYTE PTR -33[rbp], 70						; is_correct = 'F'
-	jmp	.L18										; переход на условие цикла while
+	mov	BYTE PTR -33[rbp], 70			; is_correct = 'F'
+	jmp	.L18					; РїРµСЂРµС…РѕРґ РЅР° СѓСЃР»РѕРІРёРµ С†РёРєР»Р° while
 
-.L16:												; esle if (number < 0)
-	pxor	xmm0, xmm0								; обнуление xmm0
-	comisd	xmm0, QWORD PTR -32[rbp]				; сравниваем number и 0
-	jbe	.L26										; переходим в else, если условие number >= 0
+.L16:							; esle if (number < 0)
+	pxor	xmm0, xmm0				; РѕР±РЅСѓР»РµРЅРёРµ xmm0
+	comisd	xmm0, QWORD PTR -32[rbp]		; СЃСЂР°РІРЅРёРІР°РµРј number Рё 0
+	jbe	.L26					; РїРµСЂРµС…РѕРґРёРј РІ else, РµСЃР»Рё СѓСЃР»РѕРІРёРµ number >= 0
 
-	lea	rax, .LC6[rip]								; берём адрес сообщения
-	mov	rdi, rax									; передача сообщения в функцию
-	mov	eax, 0										; код возврата
-	call	printf@PLT								;  вызов функции
+	lea	rax, .LC6[rip]				; Р±РµСЂС‘Рј Р°РґСЂРµСЃ СЃРѕРѕР±С‰РµРЅРёСЏ
+	mov	rdi, rax				; РїРµСЂРµРґР°С‡Р° СЃРѕРѕР±С‰РµРЅРёСЏ РІ С„СѓРЅРєС†РёСЋ
+	mov	eax, 0					; РєРѕРґ РІРѕР·РІСЂР°С‚Р°
+	call	printf@PLT				;  РІС‹Р·РѕРІ С„СѓРЅРєС†РёРё
 
-	mov	BYTE PTR -33[rbp], 70						; is_correct = 'F'
-	jmp	.L18										; переход в условие цикла while
+	mov	BYTE PTR -33[rbp], 70			; is_correct = 'F'
+	jmp	.L18					; РїРµСЂРµС…РѕРґ РІ СѓСЃР»РѕРІРёРµ С†РёРєР»Р° while
 
 .L26:
 	mov	BYTE PTR -33[rbp], 84
 
-.L18:												; услоивие цикла while
-	cmp	BYTE PTR -33[rbp], 70						; while(is_correct == 'F')
-	je	.L21										; если равно, то заходим в тело цикла while
+.L18:							; СѓСЃР»РѕРёРІРёРµ С†РёРєР»Р° while
+	cmp	BYTE PTR -33[rbp], 70			; while(is_correct == 'F')
+	je	.L21					; РµСЃР»Рё СЂР°РІРЅРѕ, С‚Рѕ Р·Р°С…РѕРґРёРј РІ С‚РµР»Рѕ С†РёРєР»Р° while
 
-	movsd	xmm0, QWORD PTR -32[rbp]				; переносим значение number в xmm0
-	movq	rax, xmm0								; копируем значение в rax, чтобы его вернуть
+	movsd	xmm0, QWORD PTR -32[rbp]		; РїРµСЂРµРЅРѕСЃРёРј Р·РЅР°С‡РµРЅРёРµ number РІ xmm0
+	movq	rax, xmm0				; РєРѕРїРёСЂСѓРµРј Р·РЅР°С‡РµРЅРёРµ РІ rax, С‡С‚РѕР±С‹ РµРіРѕ РІРµСЂРЅСѓС‚СЊ
 
-	mov	rdx, QWORD PTR -8[rbp]						; возвращаем всё из стека на место
+	mov	rdx, QWORD PTR -8[rbp]			; РІРѕР·РІСЂР°С‰Р°РµРј РІСЃС‘ РёР· СЃС‚РµРєР° РЅР° РјРµСЃС‚Рѕ
 	sub	rdx, QWORD PTR fs:40
-	je	.L23										; если со стеком всё впорядке, то идём в возврат функции
+	je	.L23					; РµСЃР»Рё СЃРѕ СЃС‚РµРєРѕРј РІСЃС‘ РІРїРѕСЂСЏРґРєРµ, С‚Рѕ РёРґС‘Рј РІ РІРѕР·РІСЂР°С‚ С„СѓРЅРєС†РёРё
 	call	__stack_chk_fail@PLT
 
-.L23:												; возврат значения из функции
-	movq	xmm0, rax								; return number
+.L23:							; РІРѕР·РІСЂР°С‚ Р·РЅР°С‡РµРЅРёСЏ РёР· С„СѓРЅРєС†РёРё
+	movq	xmm0, rax				; return number
 	leave
 	ret
 	.size	inputNumber, .-inputNumber
@@ -181,53 +181,53 @@ inputNumber:
 	.globl	main
 	.type	main, @function
 main:
-	push	rbp								; пролог функции
+	push	rbp					; РїСЂРѕР»РѕРі С„СѓРЅРєС†РёРё
 	mov	rbp, rsp
 	sub	rsp, 16
 
-	lea	rax, .LC7[rip]						; берём адрес сообщения
-	mov	rdi, rax							; передаём сообщение в функцию
+	lea	rax, .LC7[rip]				; Р±РµСЂС‘Рј Р°РґСЂРµСЃ СЃРѕРѕР±С‰РµРЅРёСЏ
+	mov	rdi, rax				; РїРµСЂРµРґР°С‘Рј СЃРѕРѕР±С‰РµРЅРёРµ РІ С„СѓРЅРєС†РёСЋ
 	call	puts@PLT
 
 	mov	eax, 0
 	call	inputNumber
-	movq	rax, xmm0						; возвращаем значение из фунцкии 
-	mov	QWORD PTR -16[rbp], rax				; присваиваем number результат работы функции
+	movq	rax, xmm0				; РІРѕР·РІСЂР°С‰Р°РµРј Р·РЅР°С‡РµРЅРёРµ РёР· С„СѓРЅС†РєРёРё 
+	mov	QWORD PTR -16[rbp], rax			; РїСЂРёСЃРІР°РёРІР°РµРј number СЂРµР·СѓР»СЊС‚Р°С‚ СЂР°Р±РѕС‚С‹ С„СѓРЅРєС†РёРё
 
-	mov	rax, QWORD PTR -16[rbp]				; берём значение number
-	movq	xmm0, rax						; передаём занчение в функцию 
-	call	Sqrt							; вызываем функцию
-	movq	rax, xmm0						; возвращаем результат работы функции (который хранится в xmm0)
-	mov	QWORD PTR -8[rbp], rax				; присваиваем результат переменной result
+	mov	rax, QWORD PTR -16[rbp]			; Р±РµСЂС‘Рј Р·РЅР°С‡РµРЅРёРµ number
+	movq	xmm0, rax				; РїРµСЂРµРґР°С‘Рј Р·Р°РЅС‡РµРЅРёРµ РІ С„СѓРЅРєС†РёСЋ 
+	call	Sqrt					; РІС‹Р·С‹РІР°РµРј С„СѓРЅРєС†РёСЋ
+	movq	rax, xmm0				; РІРѕР·РІСЂР°С‰Р°РµРј СЂРµР·СѓР»СЊС‚Р°С‚ СЂР°Р±РѕС‚С‹ С„СѓРЅРєС†РёРё (РєРѕС‚РѕСЂС‹Р№ С…СЂР°РЅРёС‚СЃСЏ РІ xmm0)
+	mov	QWORD PTR -8[rbp], rax			; РїСЂРёСЃРІР°РёРІР°РµРј СЂРµР·СѓР»СЊС‚Р°С‚ РїРµСЂРµРјРµРЅРЅРѕР№ result
 
-	mov	rax, QWORD PTR -8[rbp]				; берём result
-	movq	xmm0, rax						; передаём result в функцию
+	mov	rax, QWORD PTR -8[rbp]			; Р±РµСЂС‘Рј result
+	movq	xmm0, rax				; РїРµСЂРµРґР°С‘Рј result РІ С„СѓРЅРєС†РёСЋ
 
-	lea	rax, .LC8[rip]						; берём адрес текстового сообщения
-	mov	rdi, rax							; передаём сообщение в функцию
-	mov	eax, 1								; код возврата
-	call	printf@PLT						; вызов функции
+	lea	rax, .LC8[rip]				; Р±РµСЂС‘Рј Р°РґСЂРµСЃ С‚РµРєСЃС‚РѕРІРѕРіРѕ СЃРѕРѕР±С‰РµРЅРёСЏ
+	mov	rdi, rax				; РїРµСЂРµРґР°С‘Рј СЃРѕРѕР±С‰РµРЅРёРµ РІ С„СѓРЅРєС†РёСЋ
+	mov	eax, 1					; РєРѕРґ РІРѕР·РІСЂР°С‚Р°
+	call	printf@PLT				; РІС‹Р·РѕРІ С„СѓРЅРєС†РёРё
 
-	lea	rax, .LC9[rip]						; берём адрес текстового сообщения
-	mov	rdi, rax							; передаём сообщение в функцию
-	call	puts@PLT						; вызываем функцию
+	lea	rax, .LC9[rip]				; Р±РµСЂС‘Рј Р°РґСЂРµСЃ С‚РµРєСЃС‚РѕРІРѕРіРѕ СЃРѕРѕР±С‰РµРЅРёСЏ
+	mov	rdi, rax				; РїРµСЂРµРґР°С‘Рј СЃРѕРѕР±С‰РµРЅРёРµ РІ С„СѓРЅРєС†РёСЋ
+	call	puts@PLT				; РІС‹Р·С‹РІР°РµРј С„СѓРЅРєС†РёСЋ
 
-	mov	eax, 0								; return 0
+	mov	eax, 0					; return 0
 
 	leave
 	ret
 	.size	main, .-main
 	.section	.rodata
 	.align 8
-.LC1:										; значение 1
+.LC1:							; Р·РЅР°С‡РµРЅРёРµ 1
 	.long	0
 	.long	1072693248
 	.align 8
-.LC2:										; значение 2
+.LC2:							; Р·РЅР°С‡РµРЅРёРµ 2
 	.long	0
 	.long	1073741824
 	.align 8
-.LC3:										; значение 0.5
+.LC3:							; Р·РЅР°С‡РµРЅРёРµ 0.5
 	.long	0
 	.long	1071644672
 	.ident	"GCC: (Ubuntu 11.3.0-1ubuntu1~22.04) 11.3.0"
